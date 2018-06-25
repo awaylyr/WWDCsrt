@@ -103,7 +103,8 @@ final class MainViewController: NSViewController, TextFileViewDelegate, NSTextFi
     @IBOutlet weak var videoLinkTabViewStatusLabel: NSTextField!
     @IBOutlet weak var getButtonStatusLabel: NSTextField!
 
-	@IBOutlet weak var hdSdButtonsHolderBox: NSBox!
+    @IBOutlet weak var getTranscriptRadioButton: NSButton!
+    @IBOutlet weak var hdSdButtonsHolderBox: NSBox!
 	
 	@IBOutlet weak var getSubtitleRadioButton: NSButton!
 	
@@ -433,6 +434,10 @@ final class MainViewController: NSViewController, TextFileViewDelegate, NSTextFi
     // MARK: - Get button methods for getting subtitles
     
     // When user pressing the Get button we check to see which tab is selected and based on it we getting appropriate subtitles.
+    
+    @IBAction func getTranscriptButtonClicked(_ sender: NSButton) {
+        
+    }
     
     @IBAction func getSubtitleButtonClicked(_ sender: NSButton) {
 

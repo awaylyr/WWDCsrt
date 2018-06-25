@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -514,6 +514,17 @@
                                                         </box>
                                                     </subviews>
                                                 </customView>
+                                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4c7-gp-U71">
+                                                    <rect key="frame" x="16" y="23" width="109" height="18"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <buttonCell key="cell" type="radio" title="Get Transcript" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="fAS-Xb-1q7">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="getTranscriptButtonClicked:" target="XfG-lQ-9wD" id="0Db-4Z-ZSd"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="Tdh-r6-eFZ" firstAttribute="top" secondItem="rLA-Pd-Kos" secondAttribute="bottom" constant="24" id="27L-Ug-Q2y"/>
@@ -684,6 +695,7 @@ DQ
                         <outlet property="getButtonStatusLabel" destination="y6j-Uv-YIP" id="jtx-Xx-AeQ"/>
                         <outlet property="getDownloadLinkRadioButton" destination="Ipl-uV-sL5" id="6BQ-Qv-bng"/>
                         <outlet property="getSubtitleRadioButton" destination="Hht-Lf-LFP" id="fMo-Mq-XTo"/>
+                        <outlet property="getTranscriptRadioButton" destination="4c7-gp-U71" id="5Ud-Rq-WD4"/>
                         <outlet property="hdRadioButton" destination="pZJ-0U-mLu" id="K8E-Ia-aeD"/>
                         <outlet property="hdSdButtonsHolderBox" destination="OTU-X9-jgZ" id="Prh-bE-MH8"/>
                         <outlet property="pdfCheckmark" destination="xBM-4T-qf3" id="4R5-6Q-fq5"/>

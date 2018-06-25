@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1642A1E120E134EC00B2C2E7 /* SubtitleOCClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 1642A1E020E134EC00B2C2E7 /* SubtitleOCClass.m */; };
 		E410760F1F91292400A4D4AB /* TextFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E410760E1F91292400A4D4AB /* TextFileView.swift */; };
 		E423320C1F9418E600B0D517 /* SubtitlesProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E423320B1F9418E600B0D517 /* SubtitlesProgress.swift */; };
 		E431A31D20C6C161000844BF /* WWDCVideosController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E431A31C20C6C161000844BF /* WWDCVideosController.swift */; };
@@ -54,6 +55,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1642A1DE20E134EB00B2C2E7 /* WWDC.srt-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WWDC.srt-Bridging-Header.h"; sourceTree = "<group>"; };
+		1642A1DF20E134EC00B2C2E7 /* SubtitleOCClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SubtitleOCClass.h; sourceTree = "<group>"; };
+		1642A1E020E134EC00B2C2E7 /* SubtitleOCClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SubtitleOCClass.m; sourceTree = "<group>"; };
 		E410760E1F91292400A4D4AB /* TextFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFileView.swift; sourceTree = "<group>"; };
 		E423320B1F9418E600B0D517 /* SubtitlesProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesProgress.swift; sourceTree = "<group>"; };
 		E431A31C20C6C161000844BF /* WWDCVideosController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WWDCVideosController.swift; sourceTree = "<group>"; };
@@ -276,6 +280,9 @@
 				E4F327F41F4073A70018B524 /* Shared_Libraries */,
 				E4F327D01F406EA80018B524 /* Info.plist */,
 				E4E45BB91F93661C00FE62CD /* Resources */,
+				1642A1DF20E134EC00B2C2E7 /* SubtitleOCClass.h */,
+				1642A1E020E134EC00B2C2E7 /* SubtitleOCClass.m */,
+				1642A1DE20E134EB00B2C2E7 /* WWDC.srt-Bridging-Header.h */,
 			);
 			path = WWDCSubGetter;
 			sourceTree = "<group>";
@@ -321,8 +328,8 @@
 				TargetAttributes = {
 					E4F327C31F406EA80018B524 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = 2T492Q3SC8;
-						LastSwiftMigration = 0900;
+						DevelopmentTeam = 588AWE66S7;
+						LastSwiftMigration = 0930;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -391,6 +398,7 @@
 				E434C9081F8E8FBC00DA9B30 /* ConvertToSubtitleOperation.swift in Sources */,
 				E431A32920C80F5E000844BF /* ParseHtmlVideoPageOperation.swift in Sources */,
 				E431A32020C7E869000844BF /* GetLinksOperation.swift in Sources */,
+				1642A1E120E134EC00B2C2E7 /* SubtitleOCClass.m in Sources */,
 				E431A32B20C81AE4000844BF /* ParseSessionsListOperation.swift in Sources */,
 				E434C8FA1F8DFBEB00DA9B30 /* BlockObserver.swift in Sources */,
 				E434C8ED1F8DFBEB00DA9B30 /* NSLock+Operations.swift in Sources */,
@@ -533,16 +541,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 588AWE66S7;
 				INFOPLIST_FILE = WWDCSubGetter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samad.WWDC.srt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "WWDCSubGetter/WWDC.srt-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 			};
@@ -552,16 +563,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 588AWE66S7;
 				INFOPLIST_FILE = WWDCSubGetter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.samad.WWDC.srt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "WWDCSubGetter/WWDC.srt-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 			};

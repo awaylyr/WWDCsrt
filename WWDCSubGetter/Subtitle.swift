@@ -147,6 +147,7 @@ struct Subtitle: Comparable {
 		var subString: String = ""
 		let array = self.webvtts.sorted()
 		for Webvtt in array {
+                    // 拼接
 			subString += Webvtt.content
 		}
 		
@@ -154,7 +155,11 @@ struct Subtitle: Comparable {
 		var subArray = subString.components(separatedBy: "\n\n")
 		subArray = subArray.unique()
 		subString = subArray.filter{!$0.isEmpty}.map{"\(subArray.index(of: $0)! + 1)\n" + $0 }.joined(separator: "\n\n\n") + "\n\n"
-		self.saveSrtFileAtDestination(with: subString)
+                subArray = subArray.filter{!$0.isEmpty}
+                // 保存字幕文件.srt
+                // 保存Transcript
+                let transcript : String = SubtitleOCClass.exportTranscript(subArray)
+                self.saveSrtFileAtDestination(with: subString, transcript: transcript)
 		SubtitlesProgress.changed()
 	}
 	
@@ -165,22 +170,19 @@ struct Subtitle: Comparable {
 	
 	- parameter text: The content that should save in srt file.
 	*/
-	private func saveSrtFileAtDestination(with text: String) {
+    private func saveSrtFileAtDestination(with text: String, transcript: String) {
 		
 		if let dir = model.destinationURL {
 			
 			//writing
 			do {
-				let folderPathHD = "/WWDC_\(self.wwdcYear)_Video_Subtitles/HD/"
-				let folderPathSD = "/WWDC_\(self.wwdcYear)_Video_Subtitles/SD/"
+				let folderPathHD = "/WWDC_\(self.wwdcYear)_Video_Subtitles/"
 				try FileManager.default.createDirectory(atPath: dir.path + folderPathHD, withIntermediateDirectories: true, attributes: nil)
-				try FileManager.default.createDirectory(atPath: dir.path + folderPathSD, withIntermediateDirectories: true, attributes: nil)
 				
 				var path = dir.appendingPathComponent(folderPathHD + subtitleNameForHD)
 				try text.write(to: path, atomically: false, encoding: String.Encoding.utf8)
-				
-				path = dir.appendingPathComponent(folderPathSD + subtitleNameForSD)
-				try text.write(to: path, atomically: false, encoding: String.Encoding.utf8)
+                                path = dir.appendingPathComponent(folderPathHD + self.videoName + "transcript.txt")
+                                try transcript.write(to: path, atomically: false, encoding: String.Encoding.utf8)
 				
 			}
 			catch {/* error handling here */
