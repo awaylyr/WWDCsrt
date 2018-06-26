@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+
 @interface SubtitleOCClass : NSObject
-
-+ (NSString *)exportTranscript:(NSArray *)array;
-
++ (instancetype)shareInstance;
+// 导出抄本
+- (void)exportTranscriptWithRawSubtitleArray:(NSArray *)subtitleArray translateToZH:(BOOL)isTranslateToZH completionHandler:(void (^)(NSString *transcript))completionHandler;
+// 导出字幕文件
 @end

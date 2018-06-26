@@ -27,7 +27,9 @@ final class ExportSrtFileOperation: Operation {
         
         let subtitle = model.subtitle(for: self.subtitle.id)!
 
-        subtitle.exportSrtFile()
-        finish()
+        subtitle.exportSrtFile {
+            self.finish()
+        }
+        
     }
 }

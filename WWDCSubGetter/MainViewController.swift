@@ -440,11 +440,11 @@ final class MainViewController: NSViewController, TextFileViewDelegate, NSTextFi
     }
     
     @IBAction func getSubtitleButtonClicked(_ sender: NSButton) {
-
+// 判断是哪个tab
         switch self.tabView.selectedTabViewItem?.identifier as! String {
         case TabViewID.session.rawValue:
 			switch self.getState {
-			case .subtitle:
+			case .subtitle:// 获得字幕资源，这里判断一下是否获取抄本，是否用谷歌翻译成中文
 				self.getSubtitleFromSession(for: selectedWWDC)
 			case .downloadLinks:
 				var types: [SessionDataTypes] = []
@@ -492,9 +492,12 @@ final class MainViewController: NSViewController, TextFileViewDelegate, NSTextFi
     }
     
     
+    /// 开始获取对应session的字幕文件
+    ///
+    /// - Parameter wwdc: 年份
 	func getSubtitleFromSession(for wwdc: WWDC) {
 		
-		if session != nil {
+		if session != nil {// 选中的session
 			model.clear()
 			switch self.session! {
 			case .singleSession(let title):
@@ -504,10 +507,11 @@ final class MainViewController: NSViewController, TextFileViewDelegate, NSTextFi
 				let textArray = title.split(separator: " ")
 				let sessionNumber = String(textArray.first!)
 				let hdVideoURL = linksModel.hdVideoCacheURLFor(wwdc)
-				
+				// hdVideoURL是一个txt文件，文件中记录中该年份下，所有HD视频的下载链接
 				if FileManager.default.fileExists(atPath: hdVideoURL.path) {
 					
 					let data = try! String(contentsOfFile:hdVideoURL.path, encoding: String.Encoding.utf8)
+                                    // 取出当前session相关的资源地址
 					let hdVideoLinksArray = data.components(separatedBy: "\n").filter { $0.contains(sessionNumber) }
 					if let videoLink = hdVideoLinksArray.first {
 						if let subtitle = Subtitle(videoURL: videoLink) {
@@ -518,6 +522,7 @@ final class MainViewController: NSViewController, TextFileViewDelegate, NSTextFi
 				}
 				
 				if !model.isEmpty {
+                                        // 这里开始下载字幕
 					self.startGetSubtitleOperation(for: selectedWWDC)
 				}
 				else {

@@ -143,7 +143,8 @@ struct Subtitle: Comparable {
 	This method exports srt files with ordering webvtts in webvtts array
 	and gatherin their contents in a single srt file.
 	*/
-	func exportSrtFile() {
+    
+	func exportSrtFile(completionHandler: @escaping () -> Void) {
 		var subString: String = ""
 		let array = self.webvtts.sorted()
 		for Webvtt in array {
@@ -158,9 +159,14 @@ struct Subtitle: Comparable {
                 subArray = subArray.filter{!$0.isEmpty}
                 // 保存字幕文件.srt
                 // 保存Transcript
-                let transcript : String = SubtitleOCClass.exportTranscript(subArray)
-                self.saveSrtFileAtDestination(with: subString, transcript: transcript)
-		SubtitlesProgress.changed()
+//                self.saveSrtFileAtDestination(with: subString, transcript: "")
+//                SubtitlesProgress.changed()
+                SubtitleOCClass().exportTranscript(withRawSubtitleArray: subArray, translateToZH: true) { (transcript) in
+                    self.saveSrtFileAtDestination(with: subString, transcript: transcript!)
+                    SubtitlesProgress.changed()
+                    completionHandler()
+                }
+            
 	}
 	
 	/**
