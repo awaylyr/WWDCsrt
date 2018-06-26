@@ -59,7 +59,7 @@
                                             completionHandler:^(NSData *_Nullable data, NSURLResponse *_Nullable response, NSError *_Nullable error) {
                                                 if (error == nil) {
                                                     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&error];
-                                                    if (error == nil) {
+                                                    if (error == nil && [dic valueForKeyPath:@"error"] == nil) {
                                                         // 保存翻译数据
                                                         NSArray *translateResult = [dic valueForKeyPath:@"data.translations"];
                                                         for (NSDictionary *dic in translateResult) {

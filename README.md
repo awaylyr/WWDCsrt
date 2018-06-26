@@ -21,6 +21,18 @@
 
 </p>
 
+# 备注
+
+其他部分都是原作者的介绍，这部分简单说一下我增加的功能：
+
+- 将字幕文件转化成抄本；
+
+- 利用谷歌翻译，将英文抄本逐句译成中文，采用中英文对照格式排版，以免机器翻译不尽如人意。
+
+  ![Text File](./ScreenShots/wwdcsrt.gif)
+
+  
+
 # WWDC.srt
 #### An app for Download WWDC subtitles
 
