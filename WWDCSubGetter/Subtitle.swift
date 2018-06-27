@@ -155,14 +155,9 @@ struct Subtitle: Comparable {
 		// Some of webvtts have some joint content. we need found this joint parts and delete them.
 		var subArray = subString.components(separatedBy: "\n\n")
 		subArray = subArray.unique()
-		subString = subArray.filter{!$0.isEmpty}.map{"\(subArray.index(of: $0)! + 1)\n" + $0 }.joined(separator: "\n\n\n") + "\n\n"
                 subArray = subArray.filter{!$0.isEmpty}
-                // 保存字幕文件.srt
-                // 保存Transcript
-//                self.saveSrtFileAtDestination(with: subString, transcript: "")
-//                SubtitlesProgress.changed()
-                SubtitleOCClass().exportTranscript(withRawSubtitleArray: subArray, translateToZH: true) { (transcript) in
-                    self.saveSrtFileAtDestination(with: subString, transcript: transcript!)
+                SubtitleOCClass().exportTranscript(withRawSubtitleArray: subArray, translateToZH: true) { (transcript, subtitle) in
+                    self.saveSrtFileAtDestination(with: subtitle!, transcript: transcript!)
                     SubtitlesProgress.changed()
                     completionHandler()
                 }

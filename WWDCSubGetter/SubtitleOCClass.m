@@ -12,8 +12,13 @@
 
 @property (nonatomic, strong) NSMutableArray *enTranscriptArray; // 英文抄本
 @property (nonatomic, strong) NSMutableArray *zhTranscriptArray; // 中文抄本
-@property (nonatomic, assign) NSInteger currentIndex;            // 标记当前已经完成翻译的句子索引
-@property (nonatomic, copy) void (^completionHander)(NSString *);
+@property (nonatomic, copy) NSArray *rawSubtitleArray;           // 包含时间信息
+@property (nonatomic, strong) NSMutableArray *enSubtitleArray;
+@property (nonatomic, strong) NSMutableArray *zhSubtitleArray;
+
+
+@property (nonatomic, assign) NSInteger currentIndex; // 标记当前已经完成翻译的句子索引
+@property (nonatomic, copy) void (^completionHander)(NSString *, NSString *);
 
 
 @end
@@ -29,32 +34,27 @@
     return single;
 }
 
-- (instancetype)init {
-    if (self = [super init]) {
-        _enTranscriptArray = [NSMutableArray array];
-        _zhTranscriptArray = [NSMutableArray array];
-        _currentIndex = 0;
-    }
-    return self;
-}
-
-- (void)exportTranscriptWithRawSubtitleArray:(NSArray *)subtitleArray translateToZH:(BOOL)isTranslateToZH completionHandler:(void (^)(NSString *transcript))completionHandler {
+- (void)exportTranscriptWithRawSubtitleArray:(NSArray *)subtitleArray translateToZH:(BOOL)isTranslateToZH completionHandler:(void (^)(NSString *str1, NSString *str2))completionHandler {
     _enTranscriptArray = [NSMutableArray array];
     _zhTranscriptArray = [NSMutableArray array];
+    _enSubtitleArray = [NSMutableArray array];
+    _zhSubtitleArray = [NSMutableArray array];
     _currentIndex = 0;
 
-    [self generateEnTranscript:subtitleArray];
+    [self removeTimeInfo:subtitleArray];
     // 开始翻译
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:nil];
     self.completionHander = completionHandler;
-    [self startSessionTaskWithSession:session];
+    NSLog(@"start transcript File Translate Task");
+    [self startTranscriptTranslateTaskWithSession:session];
 }
 
-- (void)startSessionTaskWithSession:(NSURLSession *)session {
+- (void)startTranscriptTranslateTaskWithSession:(NSURLSession *)session {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://translation.googleapis.com/language/translate/v2"]];
     request.HTTPMethod = @"POST";
-    NSString *body = [self generateGoogleTranslateAPIParams];
+    NSString *body = [self generateGoogleTranslateAPIParamsWithData:self.enTranscriptArray];
     request.HTTPBody = [body dataUsingEncoding:NSUTF8StringEncoding];
+    NSLog(@"TranscriptTranslate:%@", @(self.currentIndex));
     NSURLSessionTask *dataTask = [session dataTaskWithRequest:request
                                             completionHandler:^(NSData *_Nullable data, NSURLResponse *_Nullable response, NSError *_Nullable error) {
                                                 if (error == nil) {
@@ -67,20 +67,64 @@
                                                             [self.zhTranscriptArray addObject:result ?: @""];
                                                         }
                                                         if (self.currentIndex < self.enTranscriptArray.count) {
-                                                            [self startSessionTaskWithSession:session];
+                                                            [self startTranscriptTranslateTaskWithSession:session];
                                                         } else {
-                                                            NSString *transcript = [self generateEnAndZhTranscript];
-                                                            self.completionHander(transcript);
+                                                            NSLog(@"start Subtitl File Translate Task");
+                                                            self.currentIndex = 0;
+                                                            [self startSubtitlFileTranslateTaskWithSession:session];
                                                         }
                                                     } else {
-                                                        // 如果一个地方出错，就停止翻译，触发回调
-                                                        NSString *transcript = [self generateEnAndZhTranscript];
-                                                        self.completionHander(transcript);
+                                                        // 如果一个地方出错，就停止文章翻译，开始翻译字幕文件
+                                                        NSLog(@"start Subtitl File Translate Task");
+                                                        self.currentIndex = 0;
+                                                        [self startSubtitlFileTranslateTaskWithSession:session];
                                                     }
                                                 } else {
-                                                    // 如果一个地方出错，就停止翻译，触发回调
+                                                    // 如果一个地方出错，就停止文章翻译，开始翻译字幕文件
+                                                    NSLog(@"start Subtitl File Translate Task");
+                                                    self.currentIndex = 0;
+                                                    [self startSubtitlFileTranslateTaskWithSession:session];
+                                                }
+
+                                            }];
+    [dataTask resume];
+}
+
+- (void)startSubtitlFileTranslateTaskWithSession:(NSURLSession *)session {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://translation.googleapis.com/language/translate/v2"]];
+    request.HTTPMethod = @"POST";
+    NSString *body = [self generateGoogleTranslateAPIParamsWithData:self.enSubtitleArray];
+    request.HTTPBody = [body dataUsingEncoding:NSUTF8StringEncoding];
+    NSLog(@"SubtitlFileTranslate:%@", @(self.currentIndex));
+    NSURLSessionTask *dataTask = [session dataTaskWithRequest:request
+                                            completionHandler:^(NSData *_Nullable data, NSURLResponse *_Nullable response, NSError *_Nullable error) {
+                                                if (error == nil) {
+                                                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&error];
+                                                    if (error == nil && [dic valueForKeyPath:@"error"] == nil) {
+                                                        NSArray *translateResult = [dic valueForKeyPath:@"data.translations"];
+                                                        for (NSDictionary *dic in translateResult) {
+                                                            NSString *result = dic[@"translatedText"];
+                                                            [self.zhSubtitleArray addObject:result ?: @""];
+                                                        }
+                                                        if (self.currentIndex < self.enSubtitleArray.count) {
+                                                            [self startSubtitlFileTranslateTaskWithSession:session];
+                                                        } else {
+                                                            NSLog(@"generte transcript and subtitle");
+                                                            NSString *transcript = [self generateEnAndZhTranscript];
+                                                            NSString *subTitle = [self generateEnAndZhSubtitle];
+                                                            self.completionHander(transcript, subTitle);
+                                                        }
+                                                    } else {
+                                                        NSLog(@"generte transcript and subtitle");
+                                                        NSString *transcript = [self generateEnAndZhTranscript];
+                                                        NSString *subTitle = [self generateEnAndZhSubtitle];
+                                                        self.completionHander(transcript, subTitle);
+                                                    }
+                                                } else {
+                                                    NSLog(@"generte transcript and subtitle");
                                                     NSString *transcript = [self generateEnAndZhTranscript];
-                                                    self.completionHander(transcript);
+                                                    NSString *subTitle = [self generateEnAndZhSubtitle];
+                                                    self.completionHander(transcript, subTitle);
                                                 }
 
                                             }];
@@ -104,12 +148,29 @@
     return [transcript copy];
 }
 
-- (NSString *)generateGoogleTranslateAPIParams {
+- (NSString *)generateEnAndZhSubtitle {
+    NSMutableString *transcript = [NSMutableString string];
+    int endIndex = 0;
+    for (int i = 0; i < self.rawSubtitleArray.count && i < self.zhSubtitleArray.count; i++) {
+        endIndex = i;
+        [transcript appendFormat:@"%@\n%@\n%@\n\n\n", @(i + 1), self.rawSubtitleArray[i], self.zhSubtitleArray[i]];
+    }
+    endIndex++;
+    if (endIndex >= self.rawSubtitleArray.count) {
+        return [transcript copy];
+    }
+    for (int i = endIndex; i < self.rawSubtitleArray.count; i++) {
+        [transcript appendFormat:@"%@\n%@\n\n\n", @(i + 1), self.rawSubtitleArray[i]];
+    }
+    return [transcript copy];
+}
+
+- (NSString *)generateGoogleTranslateAPIParamsWithData:(NSArray *)dataArray {
     // q参数
     NSMutableString *body = [NSMutableString string];
-    NSUInteger endIndex = self.currentIndex + 50 < self.enTranscriptArray.count ? self.currentIndex + 50 : self.enTranscriptArray.count;
+    NSUInteger endIndex = self.currentIndex + 50 < dataArray.count ? self.currentIndex + 50 : dataArray.count;
     for (NSUInteger i = self.currentIndex; i < endIndex; i++) {
-        NSString *str = self.enTranscriptArray[i];
+        NSString *str = dataArray[i];
         [body appendFormat:@"q=%@&", str ?: @""];
     }
     self.currentIndex = endIndex;
@@ -118,14 +179,17 @@
     return [body copy];
 }
 
-- (void)generateEnTranscript:(NSArray *)array {
+- (void)removeTimeInfo:(NSArray *)array {
+    _rawSubtitleArray = array;
     NSMutableString *currentSentence = [NSMutableString string];
     [array enumerateObjectsUsingBlock:^(NSString *rawStr, NSUInteger idx, BOOL *_Nonnull stop) {
         // 过滤掉字幕时间轴信息
         NSRegularExpression *regular = [NSRegularExpression regularExpressionWithPattern:@"\\s*([0-9]{2}:){2}[0-9]{2},[0-9]*\\s*-->\\s*([0-9]{2}:){2}[0-9]{2},[0-9]*\\s*" options:NSRegularExpressionAllowCommentsAndWhitespace error:nil];
-        NSString *finalStr = [regular stringByReplacingMatchesInString:rawStr options:NSMatchingReportCompletion range:NSMakeRange(0, rawStr.length) withTemplate:@" "];
+        NSString *finalStr = [regular stringByReplacingMatchesInString:rawStr options:NSMatchingReportCompletion range:NSMakeRange(0, rawStr.length) withTemplate:@""];
+        // 没有拼接成句子
+        [self.enSubtitleArray addObject:finalStr];
         // 短语拼接成句子
-        [currentSentence appendString:finalStr];
+        [currentSentence appendFormat:@"%@ ", finalStr];
         if ([finalStr hasSuffix:@"."]) {
             // 按句子来排版
             [self.enTranscriptArray addObject:[currentSentence copy]];

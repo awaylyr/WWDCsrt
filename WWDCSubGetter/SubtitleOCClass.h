@@ -11,7 +11,7 @@
 
 @interface SubtitleOCClass : NSObject
 + (instancetype)shareInstance;
-// 导出抄本
-- (void)exportTranscriptWithRawSubtitleArray:(NSArray *)subtitleArray translateToZH:(BOOL)isTranslateToZH completionHandler:(void (^)(NSString *transcript))completionHandler;
-// 导出字幕文件
+// 导出中英抄本 和 中英字幕
+- (void)exportTranscriptWithRawSubtitleArray:(NSArray *)subtitleArray translateToZH:(BOOL)isTranslateToZH completionHandler:(void (^)(NSString *str1, NSString *str2))completionHandler;
+
 @end
