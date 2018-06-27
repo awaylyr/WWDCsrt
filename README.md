@@ -25,13 +25,15 @@
 
 其他部分都是原作者的介绍，这部分简单说一下我增加的功能：
 
-- 将字幕文件转化成抄本；
+- 导出中英文双语字幕文件
+  ![Text File](./ScreenShots/video.png)
 
-- 利用谷歌翻译，将英文抄本逐句译成中文，采用中英文对照格式排版，以免机器翻译不尽如人意。
+- 导出中英文双语抄本
 
   ![Text File](./ScreenShots/wwdcsrt.gif)
 
-  
+- 在`Releases/`目录下有一份所有session的导出文件
+
 
 # WWDC.srt
 #### An app for Download WWDC subtitles
@@ -42,7 +44,6 @@
 
 - Now supports WWDC 2018 video's links
 
-	
 - Now you can get links of videos, pdfs and sample codes for each session you want and even for all sessions at once!
 
 - Now the app opens the destination address of your desired data in finder, after downloading them.
@@ -75,9 +76,9 @@ Data links are include videos links (HD or SD depending on your choice), pdf lin
 In this tab you can paste WWDC video link like:
 
  ` https://devstreaming-cdn.apple.com/videos/tutorials/20170912/201qy4t11tjpm/building_apps_for_iphone_x/building_apps_for_iphone_x_hd.mp4?dl=1 `
- 
+
   into text field and download it's subtitle.
-  
+
   ![Video Link](./ScreenShots/VideoLink.png)
 
 
